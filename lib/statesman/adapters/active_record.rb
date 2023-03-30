@@ -75,6 +75,17 @@ module Statesman
       end
       # rubocop:enable Naming/MemoizedInstanceVariableName
 
+      def penultimate(force_reload: false)
+        if force_reload
+          @penultimate = history(force_reload: true).
+            last(2).first
+        else
+          @penultimate ||= history.
+            reorder(sort_key: :desc).
+            offset(1).first
+        end
+      end
+
       def reset
         @last_transition = nil
       end

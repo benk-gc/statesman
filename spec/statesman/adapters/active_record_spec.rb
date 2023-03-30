@@ -378,6 +378,22 @@ describe Statesman::Adapters::ActiveRecord, active_record: true do
     end
   end
 
+  describe "#penultimate" do
+    let(:adapter) do
+      described_class.new(MyActiveRecordModelTransition, model, observer)
+    end
+
+    before do
+      adapter.create(:w, :x)
+      adapter.create(:x, :y)
+      adapter.create(:y, :z)
+    end
+
+    it "retrieves the penultimate transition from the database" do
+      expect(adapter.penultimate.to_state).to eq("y")
+    end
+  end
+
   it "resets last with #reload" do
     model.save!
     ActiveRecord::Base.transaction do
